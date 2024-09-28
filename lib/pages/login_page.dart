@@ -58,8 +58,9 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-            const CustomButton(
+            CustomButton(
               title: 'Login',
+              onTap: () {},
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

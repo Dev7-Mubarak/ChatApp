@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFiled extends StatelessWidget {
-  const CustomTextFiled({super.key, this.hintText});
+  const CustomTextFiled({super.key, this.hintText, this.onChange});
 
   final String? hintText;
-
+  final void Function(String)? onChange;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onChange,
       decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.white)),
