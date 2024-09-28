@@ -4,12 +4,25 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_filed.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   RegisterPage({super.key});
 
   static const String id = 'RegisterPage';
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   String? email;
+
   String? password;
+
+  final GlobalKey<FormState> formKey = GlobalKey();
+
+  bool isLoading = false;
+
+  // AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +57,7 @@ class RegisterPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Form(
+                key: formKey,
                 child: Column(
                   children: [
                     CustomTextFiled(
@@ -66,22 +80,30 @@ class RegisterPage extends StatelessWidget {
               ),
             ),
             CustomButton(
+              isLoading: isLoading,
               onTap: () async {
-                try {
-                  UserCredential user = await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: email!, password: password!);
-                } on FirebaseAuthException catch (e) {
-                  if (e.code == 'weak-password') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Weak Password')));
-                  } else if (e.code == 'email-alredy-in-use') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Email alredy in use')));
+                if (formKey.currentState!.validate()) {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  try {
+                    await registerUser();
+                    showSnakBar(context, 'Success');
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'weak-password') {
+                      showSnakBar(context, 'Weak Password');
+                    } else if (e.code == 'email-alredy-in-use') {
+                      showSnakBar(context, 'Email alredy in use');
+                    }
+                    showSnakBar(context, e.toString());
+                  } catch (e) {
+                    showSnakBar(context, e.toString());
+                  } finally {
+                    setState(() {
+                      isLoading = false;
+                    });
                   }
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(content: Text('Success')));
-                }
+                } else {}
               },
               title: 'Register',
             ),
@@ -108,5 +130,15 @@ class RegisterPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void showSnakBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> registerUser() async {
+    UserCredential user = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email!, password: password!);
   }
 }

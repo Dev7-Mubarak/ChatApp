@@ -8,6 +8,12 @@ class CustomTextFiled extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'The Field is required';
+        }
+        return null;
+      },
       onChanged: onChange,
       decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
