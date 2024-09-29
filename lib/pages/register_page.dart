@@ -1,11 +1,12 @@
 import 'package:chat_app/constants.dart';
+import 'package:chat_app/helper/show_snack_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_filed.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({super.key});
+  const RegisterPage({super.key});
 
   static const String id = 'RegisterPage';
 
@@ -60,7 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 key: formKey,
                 child: Column(
                   children: [
-                    CustomTextFiled(
+                    CustomFormTextFiled(
                       onChange: (value) {
                         email = value;
                       },
@@ -69,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(
                       height: 6,
                     ),
-                    CustomTextFiled(
+                    CustomFormTextFiled(
                       onChange: (value) {
                         password = value;
                       },
@@ -130,11 +131,6 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
-  }
-
-  void showSnakBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> registerUser() async {

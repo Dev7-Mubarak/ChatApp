@@ -1,11 +1,22 @@
 import 'package:chat_app/constants.dart';
+import 'package:chat_app/helper/show_snack_bar.dart';
 import 'package:chat_app/pages/register_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_filed.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  String? email, password;
+  final GlobalKey<FormState> _keyform = GlobalKey();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +51,21 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 30),
               ),
             ]),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Form(
+                key: _keyform,
                 child: Column(
                   children: [
-                    CustomTextFiled(
+                    CustomFormTextFiled(
+                      onChange: (value) => email = value,
                       hintText: 'Email',
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 6,
                     ),
-                    CustomTextFiled(
+                    CustomFormTextFiled(
+                      onChange: (value) => password = value,
                       hintText: 'Password',
                     )
                   ],
@@ -59,8 +73,30 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             CustomButton(
+              isLoading: isLoading,
               title: 'Login',
-              onTap: () {},
+              onTap: () async {
+                if (_keyform.currentState!.validate()) {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  try {
+                    loginUser();
+                    showSnakBar(context, 'success');
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'user-not-found') {
+                      showSnakBar(context, 'No user found for that email.');
+                    } else if (e.code == 'wrong-password') {
+                      showSnakBar(
+                          context, 'Wrong password provided for that user.');
+                    }
+                    showSnakBar(context, e.toString());
+                  }
+                  setState(() {
+                    isLoading = false;
+                  });
+                }
+              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -82,5 +118,10 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> loginUser() async {
+    UserCredential user = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email!, password: password!);
   }
 }
