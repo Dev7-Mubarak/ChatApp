@@ -1,4 +1,6 @@
+import 'package:chat_app/constants.dart';
 import 'package:chat_app/firebase_options.dart';
+import 'package:chat_app/pages/chat_page.dart';
 import 'package:chat_app/pages/login_page.dart';
 import 'package:chat_app/pages/register_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,7 +22,8 @@ class ChatApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         'LoginPage': (context) => const LoginPage(),
-        RegisterPage.id: (context) => RegisterPage()
+        RegisterPage.id: (context) => const RegisterPage(),
+        chatPageId: (context) => const ChatPage()
       },
       debugShowCheckedModeBanner: false,
       title: 'Chat App',
@@ -28,7 +31,7 @@ class ChatApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: 'LoginPage',
+      initialRoute: chatPageId,
     );
   }
 }

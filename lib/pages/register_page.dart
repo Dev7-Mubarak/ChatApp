@@ -23,7 +23,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool isLoading = false;
 
-  // AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +88,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   });
                   try {
                     await registerUser();
-                    showSnakBar(context, 'Success');
+                    Navigator.pushNamed(context, chatPageId);
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'weak-password') {
                       showSnakBar(context, 'Weak Password');

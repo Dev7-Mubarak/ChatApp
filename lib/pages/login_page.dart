@@ -81,8 +81,8 @@ class _LoginPageState extends State<LoginPage> {
                     isLoading = true;
                   });
                   try {
-                    loginUser();
-                    showSnakBar(context, 'success');
+                    await loginUser();
+                    Navigator.pushNamed(context, chatPageId);
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'user-not-found') {
                       showSnakBar(context, 'No user found for that email.');
@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> loginUser() async {
-    UserCredential user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email!, password: password!);
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email!, password: password!);
   }
 }
