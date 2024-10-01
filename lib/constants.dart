@@ -5,3 +5,4 @@ const kLogo = 'assets/images/scholar.png';
 const kMessageCollection = 'messages';
 const kMessage = 'message';
 const String chatPageId = 'ChatPage';
+const String createdAt = 'createdAt';
