@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                   });
                   try {
                     await loginUser();
-                    Navigator.pushNamed(context, chatPageId);
+                    Navigator.pushNamed(context, chatPageId, arguments: email);
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'user-not-found') {
                       showSnakBar(context, 'No user found for that email.');
@@ -106,7 +106,8 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Colors.white),
                 ),
                 GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, RegisterPage.id),
+                  onTap: () => Navigator.pushNamed(context, RegisterPage.id,
+                      arguments: email),
                   child: const Text(
                     '  Register',
                     style: TextStyle(color: Color(0xffC7EDE6)),

@@ -13,6 +13,7 @@ class ChatPage extends StatelessWidget {
   TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    String email = ModalRoute.of(context)!.settings.arguments as String;
     return StreamBuilder<QuerySnapshot>(
       stream: messages.orderBy(createdAt, descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -46,9 +47,12 @@ class ChatPage extends StatelessWidget {
                     reverse: true,
                     controller: _controller,
                     itemCount: messagesList.length,
-                    itemBuilder: (context, index) => ChatBuble(
-                      message: messagesList[index],
-                    ),
+                    itemBuilder: (context, index) =>
+                        messagesList[index].id == email
+                            ? ChatBuble(
+                                message: messagesList[index],
+                              )
+                            : ChatBubleForFriend(message: messagesList[index]),
                   ),
                 ),
                 Padding(
@@ -56,8 +60,11 @@ class ChatPage extends StatelessWidget {
                   child: TextFormField(
                     controller: controller,
                     onFieldSubmitted: (value) {
-                      messages
-                          .add({'message': value, createdAt: DateTime.now()});
+                      messages.add({
+                        'message': value,
+                        createdAt: DateTime.now(),
+                        'id': email
+                      });
                       controller.clear();
                       _controller.animateTo(0,
                           duration: const Duration(seconds: 2),
